@@ -6,47 +6,47 @@ class AdminDashboard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Admin Dashboard'),
+        title: const Text('Admin Dashboard'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Welcome, Admin!',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView(
                 children: [
                   ListTile(
-                    leading: Icon(Icons.lock),
-                    title: Text('Manage Lockers'),
+                    leading: const Icon(Icons.lock),
+                    title: const Text('Manage Lockers'),
                     onTap: () {
-                      // Navigate to manage lockers page
+                      Get.toNamed('/manage-lockers');
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.people),
-                    title: Text('Manage Users'),
+                    leading: const Icon(Icons.people),
+                    title: const Text('Manage Users'),
                     onTap: () {
-                      // Navigate to manage users page
+                      Get.toNamed('/manage-users');
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.notifications),
-                    title: Text('Send Notifications'),
+                    leading: const Icon(Icons.notifications),
+                    title: const Text('Send Notifications'),
                     onTap: () {
-                      // Navigate to notifications page
+                      Get.toNamed('/send-notification');
                     },
                   ),
                   ListTile(
-                    leading: Icon(Icons.report),
-                    title: Text('Generate Reports'),
+                    leading: const Icon(Icons.report),
+                    title: const Text('Generate Reports'),
                     onTap: () {
-                      // Navigate to reports page
+                      Get.toNamed('/reports');
                     },
                   ),
                 ],

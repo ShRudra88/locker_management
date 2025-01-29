@@ -80,6 +80,7 @@ class RegistrationPage extends StatelessWidget {
                     confirmPasswordController.text,
                     roleController.text.trim(),
                   );
+                  Get.toNamed('/login');
                 },
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(double.infinity, 50),

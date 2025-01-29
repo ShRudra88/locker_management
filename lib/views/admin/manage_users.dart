@@ -11,24 +11,24 @@ class ManageUsersPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Manage Users'),
+        title: const Text('Manage Users'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Text(
+            const Text(
               'User Management',
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             Expanded(
               child: ListView.builder(
                 itemCount: users.length,
                 itemBuilder: (context, index) {
                   final user = users[index];
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       leading: CircleAvatar(
                         child: Text(user['name'][0]),
@@ -40,11 +40,11 @@ class ManageUsersPage extends StatelessWidget {
                           // Handle user approval/decline
                         },
                         itemBuilder: (context) => [
-                          PopupMenuItem(
+                          const PopupMenuItem(
                             value: 'approve',
                             child: Text('Approve'),
                           ),
-                          PopupMenuItem(
+                          const PopupMenuItem(
                             value: 'decline',
                             child: Text('Decline'),
                           ),

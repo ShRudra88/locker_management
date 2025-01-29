@@ -53,7 +53,6 @@ class AuthController extends GetxController {
     }
   }
 
-  /// **Registration Function**
   Future<void> register(
       String email, String password, String confirmPassword, String role) async {
     if (email.isEmpty || password.isEmpty || confirmPassword.isEmpty || role.isEmpty) {
@@ -63,6 +62,12 @@ class AuthController extends GetxController {
 
     if (password != confirmPassword) {
       Get.snackbar('Error', 'Passwords do not match');
+      return;
+    }
+
+    List<String> validRoles = ['Admin', 'Student', 'Visitor'];
+    if (!validRoles.contains(role)) {
+      Get.snackbar('Error', 'Invalid role. Choose Admin, Student, or Visitor.');
       return;
     }
 
@@ -76,6 +81,7 @@ class AuthController extends GetxController {
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': email.trim(),
         'role': role,
+        'approved': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -83,9 +89,9 @@ class AuthController extends GetxController {
 
       Get.snackbar(
         'Success',
-        'Registration Successful! Please login.',
+        'Registration Successful! Wait for admin approval.',
         snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.green,
+        backgroundColor: Colors.orange,
         colorText: Colors.white,
       );
 
@@ -97,6 +103,8 @@ class AuthController extends GetxController {
       Get.snackbar('Error', e.message ?? 'Registration failed');
     }
   }
+
+
 
   /// **Logout Function**
   Future<void> logout() async {

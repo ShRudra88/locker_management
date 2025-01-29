@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class StudentDashboard extends StatelessWidget {
   const StudentDashboard({super.key});
@@ -26,14 +27,14 @@ class StudentDashboard extends StatelessWidget {
                     leading: const Icon(Icons.book_online),
                     title: const Text('Reserve a Locker'),
                     onTap: () {
-                      // Navigate to locker reservation page
+                      Get.toNamed('/reserve-locker');
                     },
                   ),
                   ListTile(
                     leading: const Icon(Icons.assignment),
                     title: const Text('My Reservations'),
                     onTap: () {
-                      // Navigate to view reservations page
+                      Get.toNamed('/my-reservations');
                     },
                   ),
                   ListTile(

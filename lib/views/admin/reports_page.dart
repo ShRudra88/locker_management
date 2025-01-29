@@ -1,50 +1,49 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class ReportsPage extends StatelessWidget {
-  final Map<String, int> lockerSummary = {
-    'Booked Lockers': 50,
-    'Available Lockers': 30,
-    'Maintenance Lockers': 10,
-  };
+  final List<Map<String, dynamic>> reportData = [
+    {'lockerId': 'L101', 'status': 'Booked'},
+    {'lockerId': 'L202', 'status': 'Available'},
+    {'lockerId': 'L303', 'status': 'Under Maintenance'},
+    {'lockerId': 'L404', 'status': 'Booked'},
+  ];
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Reports'),
-      ),
+      appBar: AppBar(title: const Text('Generate Reports')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'Locker Reports',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
-                itemCount: lockerSummary.keys.length,
+                itemCount: reportData.length,
                 itemBuilder: (context, index) {
-                  String key = lockerSummary.keys.elementAt(index);
-                  int value = lockerSummary[key]!;
+                  final report = reportData[index];
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
                     child: ListTile(
                       leading: Icon(
-                        key == 'Booked Lockers'
+                        report['status'] == 'Booked'
                             ? Icons.lock
-                            : key == 'Available Lockers'
+                            : report['status'] == 'Available'
                             ? Icons.lock_open
                             : Icons.build,
+                        color: report['status'] == 'Booked'
+                            ? Colors.red
+                            : report['status'] == 'Available'
+                            ? Colors.green
+                            : Colors.orange,
                       ),
-                      title: Text(key),
-                      trailing: Text(
-                        '$value',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
+                      title: Text('Locker ID: ${report['lockerId']}'),
+                      subtitle: Text('Status: ${report['status']}'),
                     ),
                   );
                 },

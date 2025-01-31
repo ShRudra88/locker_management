@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
@@ -19,8 +20,8 @@ import 'views/visitor/visitor_dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
-
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
+  await messaging.requestPermission();
   runApp(const MyApp());
 }
 
@@ -41,7 +42,7 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/login', page: () => LoginPage()),
         GetPage(name: '/register', page: () => RegistrationPage()),
         GetPage(name: '/forgot-password', page: () => ForgotPasswordPage()),
-        GetPage(name: '/admin-dashboard', page: () => AdminDashboard()),
+        GetPage(name: '/admin-dashboard', page: () => const AdminDashboard()),
         GetPage(name: '/student-dashboard', page: () => const StudentDashboard()),
         GetPage(name: '/visitor-dashboard', page: () => const VisitorDashboard()),
         GetPage(name: '/manage-users', page: () => ManageUsersPage()),

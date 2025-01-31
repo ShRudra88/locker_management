@@ -10,7 +10,7 @@ class AuthController extends GetxController {
 
   User? get currentUser => _auth.currentUser;
 
-  /// **Login Function (Only Approved Users Can Login)**
+
   Future<void> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar('Error', 'Email and Password cannot be empty');
@@ -76,7 +76,6 @@ class AuthController extends GetxController {
       return;
     }
 
-    // Convert role to lowercase for case-insensitive comparison
     role = role.trim().toLowerCase();
 
     if (!['admin', 'student', 'visitor'].contains(role)) {
@@ -93,8 +92,8 @@ class AuthController extends GetxController {
 
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': email.trim(),
-        'role': role.capitalizeFirst, // Store role with proper capitalization
-        'approved': false, // Default: Not approved
+        'role': role.capitalizeFirst,
+        'approved': false,
         'createdAt': FieldValue.serverTimestamp(),
       });
 
@@ -106,20 +105,18 @@ class AuthController extends GetxController {
         colorText: Colors.white,
       );
 
-      // ✅ Redirect to login page after successful registration
+
       Future.delayed(const Duration(seconds: 2), () {
         Get.offNamed('/login');
       });
 
     } on FirebaseAuthException catch (e) {
       Get.snackbar('Error', e.message ?? 'Registration failed');
-      // ❌ Do not navigate away from the registration page if an error occurs
     } finally {
       isLoading.value = false;
     }
   }
 
-  /// **Admin: Approve a User (Only Admin Can Approve)**
   Future<void> approveUser(String userId) async {
     await _firestore.collection('users').doc(userId).update({
       'approved': true,
@@ -128,13 +125,11 @@ class AuthController extends GetxController {
     Get.snackbar('Success', 'User approved successfully', backgroundColor: Colors.green, colorText: Colors.white);
   }
 
-  /// **Admin: Reject a User**
   Future<void> rejectUser(String userId) async {
     await _firestore.collection('users').doc(userId).delete();
     Get.snackbar('Success', 'User rejected and deleted successfully', backgroundColor: Colors.red, colorText: Colors.white);
   }
 
-  /// **Developer Only: Approve an Admin (Done Manually in Firestore)**
   Future<void> approveAdmin(String userId) async {
     await _firestore.collection('users').doc(userId).update({
       'approved': true,
@@ -143,23 +138,21 @@ class AuthController extends GetxController {
     Get.snackbar('Success', 'Admin approved successfully', backgroundColor: Colors.blue, colorText: Colors.white);
   }
 
-  /// **Admin Only: Promote a User to Admin**
   Future<void> makeAdmin(String userId) async {
     await _firestore.collection('users').doc(userId).update({
       'role': 'Admin',
-      'approved': false, // Even promoted Admins need developer approval
+      'approved': false,
     });
 
     Get.snackbar('Success', 'User promoted to Admin (Pending Approval)', backgroundColor: Colors.orange, colorText: Colors.white);
   }
 
-  /// **Logout Function**
+
   Future<void> logout() async {
     await _auth.signOut();
     Get.offAllNamed('/login');
   }
 
-  /// **Send Password Reset Email**
   Future<void> sendOtp(String email) async {
     if (email.isEmpty) {
       Get.snackbar('Error', 'Email cannot be empty');

@@ -1,8 +1,7 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_core/firebase_core.dart' show Firebase;
 import 'package:get/get.dart';
-import 'package:locker_management/theme_data.dart';
+import 'package:locker_management/helping_widgets/theme_data.dart';
 import 'controllers/auth_controller.dart';
 import 'views/admin/admin_dashboard.dart';
 import 'views/admin/manage_lockers_page.dart';
@@ -14,14 +13,15 @@ import 'views/auth/login_page.dart';
 import 'views/auth/registration_page.dart';
 import 'views/splash_screen.dart';
 import 'views/student/my_revervation_page.dart';
+import 'views/student/reserve_locker.dart';
 import 'views/student/student_dashboard.dart';
-import 'views/visitor/reserve_locker.dart';
 import 'views/visitor/visitor_dashboard.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  FirebaseMessaging messaging = FirebaseMessaging.instance;
-  await messaging.requestPermission();
+  await Firebase.initializeApp();
+  //FirebaseMessaging messaging = FirebaseMessaging.instance;
+  //await messaging.requestPermission();
   runApp(const MyApp());
 }
 

@@ -37,13 +37,13 @@ class StudentDashboard extends StatelessWidget {
                       Get.toNamed('/my-reservations');
                     },
                   ),
-                  ListTile(
+                  /*ListTile(
                     leading: const Icon(Icons.notifications),
                     title: const Text('Notifications'),
                     onTap: () {
                       // Navigate to notifications page
                     },
-                  ),
+                  ),*/
                 ],
               ),
             ),

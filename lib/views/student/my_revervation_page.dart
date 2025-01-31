@@ -12,7 +12,7 @@ class MyReservationsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('My Reservations')),
+      appBar: AppBar(title: const Text('My Reservations')),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: ListView.builder(
@@ -28,8 +28,8 @@ class MyReservationsPage extends StatelessWidget {
                   onPressed: () {
                     Get.snackbar('Cancelled', 'Locker ${locker['id']} reservation cancelled!');
                   },
-                  child: Text('Cancel'),
                   style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
+                  child: const Text('Cancel'),
                 ),
               ),
             );

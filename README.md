@@ -1,16 +1,18 @@
-# locker_management
+# **Locker Management System**
 
-A new Flutter project.
+## **Overview**
+The **Locker Management System** is a Flutter application that allows **students** and **visitors** to reserve lockers. The system ensures real-time availability updates and supports reservation and cancellation functionalities.
 
-## Getting Started
+## **Features**
+✔ **Separate Lockers for Students & Visitors**  
+✔ **Real-time Locker Status Updates (Firestore)**  
+✔ **User Authentication (Firebase Auth)**  
+✔ **Reserve Lockers for a Custom Duration**  
+✔ **Cancel or Return Lockers**
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## **Tech Stack**
+- **Flutter** – Frontend framework
+- **GetX** – State management
+- **Firebase Firestore** – Database
+- **Firebase Authentication** – User authentication
+- **Dart** – Programming language

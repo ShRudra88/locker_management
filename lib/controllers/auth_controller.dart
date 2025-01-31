@@ -10,7 +10,7 @@ class AuthController extends GetxController {
 
   User? get currentUser => _auth.currentUser;
 
-  /// **Login Function**
+  /// **Login Function (Only Approved Users Can Login)**
   Future<void> login(String email, String password) async {
     if (email.isEmpty || password.isEmpty) {
       Get.snackbar('Error', 'Email and Password cannot be empty');
@@ -30,26 +30,37 @@ class AuthController extends GetxController {
           .get();
 
       if (!userDoc.exists) {
-        isLoading.value = false;
         Get.snackbar('Error', 'User data not found');
+        await _auth.signOut();
         return;
       }
 
-      String role = userDoc['role'];
+      bool isApproved = userDoc['approved'] ?? false;
+      String role = userDoc['role'] ?? 'Unknown';
 
-      isLoading.value = false;
-      if (role == 'Admin') {
-        Get.offNamed('/admin-dashboard');
-      } else if (role == 'Student') {
-        Get.offNamed('/student-dashboard');
-      } else if (role == 'Visitor') {
-        Get.offNamed('/visitor-dashboard');
-      } else {
-        Get.snackbar('Error', 'Unknown role');
+      if (!isApproved) {
+        Get.snackbar('Error', 'Your account is not approved yet.');
+        await _auth.signOut();
+        return;
+      }
+
+      switch (role) {
+        case 'Admin':
+          Get.offNamed('/admin-dashboard');
+          break;
+        case 'Student':
+          Get.offNamed('/student-dashboard');
+          break;
+        case 'Visitor':
+          Get.offNamed('/visitor-dashboard');
+          break;
+        default:
+          Get.snackbar('Error', 'Unknown role');
       }
     } on FirebaseAuthException catch (e) {
-      isLoading.value = false;
       Get.snackbar('Error', e.message ?? 'Login failed');
+    } finally {
+      isLoading.value = false;
     }
   }
 
@@ -65,9 +76,11 @@ class AuthController extends GetxController {
       return;
     }
 
-    List<String> validRoles = ['Admin', 'Student', 'Visitor'];
-    if (!validRoles.contains(role)) {
-      Get.snackbar('Error', 'Invalid role. Choose Admin, Student, or Visitor.');
+    // Convert role to lowercase for case-insensitive comparison
+    role = role.trim().toLowerCase();
+
+    if (!['admin', 'student', 'visitor'].contains(role)) {
+      Get.snackbar('Error', 'Invalid role selected.');
       return;
     }
 
@@ -80,31 +93,65 @@ class AuthController extends GetxController {
 
       await _firestore.collection('users').doc(userCredential.user!.uid).set({
         'email': email.trim(),
-        'role': role,
-        'approved': false,
+        'role': role.capitalizeFirst, // Store role with proper capitalization
+        'approved': false, // Default: Not approved
         'createdAt': FieldValue.serverTimestamp(),
       });
 
-      isLoading.value = false;
-
       Get.snackbar(
         'Success',
-        'Registration Successful! Wait for admin approval.',
+        'Registration Successful! Wait for approval.',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.orange,
         colorText: Colors.white,
       );
 
+      // ✅ Redirect to login page after successful registration
       Future.delayed(const Duration(seconds: 2), () {
         Get.offNamed('/login');
       });
+
     } on FirebaseAuthException catch (e) {
-      isLoading.value = false;
       Get.snackbar('Error', e.message ?? 'Registration failed');
+      // ❌ Do not navigate away from the registration page if an error occurs
+    } finally {
+      isLoading.value = false;
     }
   }
 
+  /// **Admin: Approve a User (Only Admin Can Approve)**
+  Future<void> approveUser(String userId) async {
+    await _firestore.collection('users').doc(userId).update({
+      'approved': true,
+    });
 
+    Get.snackbar('Success', 'User approved successfully', backgroundColor: Colors.green, colorText: Colors.white);
+  }
+
+  /// **Admin: Reject a User**
+  Future<void> rejectUser(String userId) async {
+    await _firestore.collection('users').doc(userId).delete();
+    Get.snackbar('Success', 'User rejected and deleted successfully', backgroundColor: Colors.red, colorText: Colors.white);
+  }
+
+  /// **Developer Only: Approve an Admin (Done Manually in Firestore)**
+  Future<void> approveAdmin(String userId) async {
+    await _firestore.collection('users').doc(userId).update({
+      'approved': true,
+    });
+
+    Get.snackbar('Success', 'Admin approved successfully', backgroundColor: Colors.blue, colorText: Colors.white);
+  }
+
+  /// **Admin Only: Promote a User to Admin**
+  Future<void> makeAdmin(String userId) async {
+    await _firestore.collection('users').doc(userId).update({
+      'role': 'Admin',
+      'approved': false, // Even promoted Admins need developer approval
+    });
+
+    Get.snackbar('Success', 'User promoted to Admin (Pending Approval)', backgroundColor: Colors.orange, colorText: Colors.white);
+  }
 
   /// **Logout Function**
   Future<void> logout() async {
@@ -112,7 +159,7 @@ class AuthController extends GetxController {
     Get.offAllNamed('/login');
   }
 
-  /// **Send Password Reset OTP**
+  /// **Send Password Reset Email**
   Future<void> sendOtp(String email) async {
     if (email.isEmpty) {
       Get.snackbar('Error', 'Email cannot be empty');
@@ -122,19 +169,18 @@ class AuthController extends GetxController {
     isLoading.value = true;
     try {
       await _auth.sendPasswordResetEmail(email: email.trim());
-      isLoading.value = false;
       Get.snackbar(
         'Success',
-        'Link sent to your email',
+        'Password reset link sent to your email',
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.blue,
         colorText: Colors.white,
       );
       Get.toNamed('/login');
     } on FirebaseAuthException catch (e) {
-      isLoading.value = false;
       Get.snackbar('Error', e.message ?? 'Failed to send OTP');
+    } finally {
+      isLoading.value = false;
     }
   }
-
 }
